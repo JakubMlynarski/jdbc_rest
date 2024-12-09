@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Management</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #2b2d42;
+            color: #edf2f4;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: #edf2f4;
+            margin-left: 20px;
+            font-size: 18px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .content h2 {
+            font-size: 28px;
+            color: #2b2d42;
+        }
+
+        main.page-content {
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        form label {
+            flex: 1 1 100%;
+            text-align: left;
+            font-size: 16px;
+            color: #2b2d42;
+        }
+
+        form input, form button {
+            flex: 1 1 calc(33% - 20px);
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            flex: 1 1 100%;
+            background-color: #2b2d42;
+            color: #edf2f4;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #6c757d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #2b2d42;
+            color: #edf2f4;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+<div class="navbar">
+    <h1>Customer Management</h1>
+    <div>
+        <a href="index.html">Main</a>
+        <a href="create.html">Create</a>
+        <a href="update.html">Update</a>
+        <a href="delete.html">Delete</a>
+    </div>
+</div>
+<main class="page-content">
+
+    <section>
+        <h2>Search Customers</h2>
+        <form onsubmit="event.preventDefault(); getData();">
+            <label for="firstname-input">Firstname:</label>
+            <input id="firstname-input" placeholder="Enter firstname" />
+
+            <label for="lastname-input">Lastname:</label>
+            <input id="lastname-input" placeholder="Enter lastname" />
+
+            <label for="index-input">Index:</label>
+            <input id="index-input" placeholder="Enter index" type="number" />
+
+            <button type="submit">Search</button>
+        </form>
+    </section>
+
+
+
+    <table id="results-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Index</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</main>
+
+<script>
+    const baseUrl = "http://localhost:8080/customers";
+
+    async function getData() {
+      clearOutput();
+
+      const firstname = document.getElementById("firstname-input").value;
+      const lastname = document.getElementById("lastname-input").value;
+      const index = document.getElementById("index-input").value;
+
+      const params = new URLSearchParams();
+      if (firstname) params.append("firstname", firstname);
+      if (lastname) params.append("lastname", lastname);
+      if (index) params.append("index", index);
+
+      try {
+        const response = await fetch(`${baseUrl}?${params.toString()}`);
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
+        const customers = await response.json();
+        renderTable(customers);
+      } catch (error) {
+        console.error("Failed to fetch data:", error.message);
+      }
+    }
+
+    function renderTable(customers) {
+      const tableBody = document.getElementById("results-table").querySelector("tbody");
+      customers.forEach((customer) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${customer.id || "-"}</td>
+          <td>${customer.firstName || "-"}</td>
+          <td>${customer.lastName || "-"}</td>
+          <td>${customer.index !== null ? customer.index : "-"}</td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    function clearOutput() {
+      const tableBody = document.getElementById("results-table").querySelector("tbody");
+      tableBody.innerHTML = "";
+    }
+</script>
+</body>
+</html>

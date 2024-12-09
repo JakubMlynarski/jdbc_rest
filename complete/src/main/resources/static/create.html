@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Management</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #2b2d42;
+            color: #edf2f4;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: #edf2f4;
+            margin-left: 20px;
+            font-size: 18px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .content h2 {
+            font-size: 28px;
+            color: #2b2d42;
+        }
+
+        main.page-content {
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        form label {
+            flex: 1 1 100%;
+            text-align: left;
+            font-size: 16px;
+            color: #2b2d42;
+        }
+
+        form input, form button {
+            flex: 1 1 calc(33% - 20px);
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            flex: 1 1 100%;
+            background-color: #2b2d42;
+            color: #edf2f4;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #6c757d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #2b2d42;
+            color: #edf2f4;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+<div class="navbar">
+    <h1>Customer Management</h1>
+    <div>
+        <a href="index.html">Main</a>
+        <a href="search.html">Search</a>
+        <a href="update.html">Update</a>
+        <a href="delete.html">Delete</a>
+    </div>
+</div>
+
+<main class="page-content">
+    <h1>Customer Management</h1>
+
+    <section>
+        <h2>Create Customer</h2>
+        <form onsubmit="event.preventDefault(); createCustomer();">
+            <label for="create-firstname">Firstname:</label>
+            <input id="create-firstname" placeholder="Enter firstname" />
+
+            <label for="create-lastname">Lastname:</label>
+            <input id="create-lastname" placeholder="Enter lastname" />
+
+            <label for="create-index">Index:</label>
+            <input id="create-index" placeholder="Enter index" type="number" />
+
+            <button type="submit">Create</button>
+        </form>
+    </section>
+
+</main>
+
+<script>
+    const baseUrl = "http://localhost:8080/customers";
+
+
+    async function createCustomer() {
+      const customer = {
+        firstName: document.getElementById("create-firstname").value,
+        lastName: document.getElementById("create-lastname").value,
+        index: document.getElementById("create-index").value,
+      };
+
+      try {
+        const response = await fetch('http://localhost:8080/customers', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(customer),
+        });
+        alert(await response.text());
+      } catch (error) {
+        console.error("Failed to create customer:", error.message);
+      }
+    }
+
+
+
+    function clearOutput() {
+      const tableBody = document.getElementById("results-table").querySelector("tbody");
+      tableBody.innerHTML = "";
+    }
+</script>
+</body>
+</html>
